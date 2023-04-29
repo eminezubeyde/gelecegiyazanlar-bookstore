@@ -24,12 +24,12 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public Author getById(@RequestParam int id) {
+    public Author getById(@RequestParam long id) {
         return authorService.getById(id);
     }
 
     @DeleteMapping
-    public void delete(@RequestParam int id) {
+    public void delete(@RequestParam long id) {
         authorService.delete(id);
     }
 }

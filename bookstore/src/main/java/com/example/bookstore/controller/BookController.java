@@ -24,12 +24,12 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public Book getById(@RequestParam int id) {
+    public Book getById(@RequestParam long id) {
         return bookService.getById(id);
     }
 
     @DeleteMapping
-    public void delete(@RequestParam int id) {
+    public void delete(@RequestParam long id) {
         bookService.delete(id);
     }
 }
