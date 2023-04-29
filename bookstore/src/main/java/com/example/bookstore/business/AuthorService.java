@@ -9,7 +9,7 @@ public interface AuthorService {
 
     List<Author> getAll();
 
-    Author getById(int id);
+    Author getById(long id);
 
-    void delete(int id);
+    void delete(long id);
 }

@@ -9,7 +9,7 @@ public interface BookService {
 
     List<Book> getAll();
 
-    Book getById(int id);
+    Book getById(long id);
 
-    void delete(int id);
+    void delete(long id);
 }
