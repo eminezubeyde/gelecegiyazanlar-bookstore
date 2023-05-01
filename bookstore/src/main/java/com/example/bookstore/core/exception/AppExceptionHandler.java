@@ -14,13 +14,19 @@ public class AppExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResult alreadyExistsExceptionHandler(AlreadyExistsException e,
-                                                         HttpServletRequest request){
-      return getExceptionResponse(e,request,HttpStatus.NOT_FOUND.toString());
+                                                         HttpServletRequest request) {
+        return getExceptionResponse(e, request, HttpStatus.ALREADY_REPORTED.toString());
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResult entityNotFoundExceptionHandler(EntityNotFoundException e,
+                                                          HttpServletRequest request) {
+        return getExceptionResponse(e, request, HttpStatus.NOT_FOUND.toString());
     }
 
     private ExceptionResult getExceptionResponse(RuntimeException e,
-                                 HttpServletRequest request,
-                                 String status){
-        return new ExceptionResult(status,e.getMessage(), request.getServletPath(), LocalDateTime.now());
+                                                 HttpServletRequest request,
+                                                 String status) {
+        return new ExceptionResult(status, e.getMessage(), request.getServletPath(), LocalDateTime.now());
     }
 }
