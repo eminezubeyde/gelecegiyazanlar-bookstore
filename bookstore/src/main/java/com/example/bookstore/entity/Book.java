@@ -11,15 +11,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Book extends BaseModel {
     private String title;
     private String publicationYear;//yayın yılı
-    private BookType bookType;
+    private String contents;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Category category;
 
 }
