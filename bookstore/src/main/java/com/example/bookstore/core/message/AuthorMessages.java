@@ -2,8 +2,8 @@ package com.example.bookstore.core.message;
 
 public enum AuthorMessages {
     NOT_FOUND("Böyle bir yazar bulunamadı"),
-    ALREADY_EXISTS("Böyle bir yazar zaten kayıtlı")
-    ;
+    ALREADY_EXISTS("Böyle bir yazar zaten kayıtlı"),
+    SUCCESSFUL("BAŞARIYLA EKLENDİ");
 
 
     private final String message;
