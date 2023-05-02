@@ -1,11 +1,10 @@
 package com.example.bookstore.controller;
 
 import com.example.bookstore.business.BookService;
-import com.example.bookstore.entity.Book;
+import com.example.bookstore.core.dto.requests.CreateBookRequest;
+import com.example.bookstore.core.result.GeneralResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/book")
@@ -14,17 +13,17 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public Book create(@RequestBody Book book) {
-        return bookService.add(book);
+    public GeneralResult create(@RequestBody CreateBookRequest request) {
+        return bookService.add(request);
     }
 
     @GetMapping
-    public List<Book> getAll() {
+    public GeneralResult getAll() {
         return bookService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Book getById(@RequestParam long id) {
+    public GeneralResult getById(@RequestParam long id) {
         return bookService.getById(id);
     }
 

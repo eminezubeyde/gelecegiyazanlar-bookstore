@@ -1,30 +1,32 @@
 package com.example.bookstore.controller;
 
 import com.example.bookstore.business.AuthorService;
-import com.example.bookstore.entity.Author;
+import com.example.bookstore.core.dto.requests.CreateAuthorRequest;
+import com.example.bookstore.core.result.GeneralResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/author")
 public class AuthorController {
-    private final AuthorService authorService;
+    @Autowired
+    private AuthorService authorService;
 
     @PostMapping
-    public Author create(@RequestBody Author author) {
-        return authorService.add(author);
+    public GeneralResult create(@RequestBody CreateAuthorRequest request) {
+        return authorService.add(request);
     }
 
     @GetMapping
-    public List<Author> getAll() {
+    public GeneralResult getAll() {
         return authorService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Author getById(@RequestParam long id) {
+    public GeneralResult getById(@RequestParam long id) {
         return authorService.getById(id);
     }
 
