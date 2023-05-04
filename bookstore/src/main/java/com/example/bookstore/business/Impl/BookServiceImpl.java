@@ -13,6 +13,7 @@ import com.example.bookstore.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +24,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public GeneralResult add(CreateBookRequest request) {
         Book book = BookMapper.INSTANCE.createBookRequestToBook(request);
+        book.setCreatedDate(LocalDateTime.now());
         repository.save(book);
         BookDTO dto = BookMapper.INSTANCE.bookToBookDTO(book);
 
@@ -41,13 +43,14 @@ public class BookServiceImpl implements BookService {
     public GeneralResult getById(long id) {
         checkIfBookExists(id);
         Book book = repository.findById(id).orElseThrow();
-        return new DataResult<>(repository.findById(id), BookMessages.SUCCESSFUL.toString());
+        BookDTO dto=BookMapper.INSTANCE.bookToBookDTO(book);
+        return new DataResult<>(dto);
     }
 
     @Override
     public void delete(long id) {
+        checkIfBookExists(id);
         repository.deleteById(id);
-
     }
 
     private void checkIfBookExists(long id) {

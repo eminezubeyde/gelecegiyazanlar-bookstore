@@ -1,7 +1,8 @@
 package com.example.bookstore.core.message;
 
-public class BookMessages {
-    public static final String NOT_FOUND = "Böyle bir kitap bulunamadı";
+public enum BookMessages {
+    NOT_FOUND("Böyle bir kitap bulunamadı"),
+    SUCCESSFUL("Başarıyla eklendi");
 
     private final String message;
 
