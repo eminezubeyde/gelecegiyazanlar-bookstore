@@ -24,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository repository;
 
     @Override
-    public GeneralResult add(CreateCategoryRequest request) {
+    public GeneralResult add(CreateCategoryRequest request) throws AlreadyExistsException {
         // 1. parent 'i olmayan bir category eklemek .
         // ELEKTRONIK
         //2. parent'ı olan bir category eklemek .
@@ -76,18 +76,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(long id) throws EntityNotFoundException {
         checkIfCategoryExists(id);
         repository.deleteById(id);
     }
 
-    private void checkIfCategoryExists(Long id) {
+    private void checkIfCategoryExists(Long id) throws EntityNotFoundException {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException(CategoryMessages.NOT_FOUND.toString());
         }
     }
 
-    private void checkIfCategoryExistsByName(String name) {
+    private void checkIfCategoryExistsByName(String name) throws AlreadyExistsException {
         if (repository.existsByNameIgnoreCase(name)) {
             throw new AlreadyExistsException(CategoryMessages.ALREADY_EXISTS.toString());
         }

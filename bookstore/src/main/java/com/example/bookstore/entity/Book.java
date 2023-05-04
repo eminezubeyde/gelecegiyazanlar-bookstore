@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Book extends BaseModel {
     private String title;
-    private String publicationYear;//yayın yılı
+    private String publishedYear;//yayın yılı
     private String content;
     private LocalDateTime createdDate;
     @ManyToOne(fetch = FetchType.LAZY)

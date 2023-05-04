@@ -13,20 +13,16 @@ import java.time.LocalDateTime;
 public class AppExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResult alreadyExistsExceptionHandler(AlreadyExistsException e,
+    public ExceptionResult generalExceptionHandler(GeneralException e,
                                                          HttpServletRequest request) {
-        return getExceptionResponse(e, request, HttpStatus.ALREADY_REPORTED.toString());
+        return new ExceptionResult(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), request.getServletPath(), LocalDateTime.now());
     }
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionResult entityNotFoundExceptionHandler(EntityNotFoundException e,
                                                           HttpServletRequest request) {
-        return getExceptionResponse(e, request, HttpStatus.NOT_FOUND.toString());
+        return new ExceptionResult(HttpStatus.NOT_FOUND.toString(), e.getMessage(), request.getServletPath(), LocalDateTime.now());
     }
 
-    private ExceptionResult getExceptionResponse(RuntimeException e,
-                                                 HttpServletRequest request,
-                                                 String status) {
-        return new ExceptionResult(status, e.getMessage(), request.getServletPath(), LocalDateTime.now());
-    }
+
 }

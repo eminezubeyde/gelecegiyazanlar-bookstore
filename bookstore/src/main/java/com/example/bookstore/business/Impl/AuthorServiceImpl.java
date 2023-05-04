@@ -25,7 +25,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorMapper authorMapper;
     @Override
-    public GeneralResult add(CreateAuthorRequest request) {
+    public GeneralResult add(CreateAuthorRequest request) throws AlreadyExistsException {
         log.info("author add method started with request : "+request);
         checkIfAuthorExistsByName(request.getName());
         Author author = authorMapper.createAuthorRequestToAuthor(request);
@@ -46,7 +46,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public GeneralResult getById(long id) {
+    public GeneralResult getById(long id) throws EntityNotFoundException {
         checkIfAuthorExists(id);
         Author author = authorRepository.findById(id).orElseThrow();
         log.info("id ye göre yazar getirildi");
@@ -66,7 +66,7 @@ public class AuthorServiceImpl implements AuthorService {
         }
     }
 
-    private void checkIfAuthorExists(long id) {
+    private void checkIfAuthorExists(long id) throws EntityNotFoundException {
         if (!authorRepository.existsById(id)) {
             log.error(AuthorMessages.NOT_FOUND.toString());
             throw new EntityNotFoundException(AuthorMessages.NOT_FOUND.toString());

@@ -16,10 +16,8 @@ import java.time.LocalDateTime;
 public class BookDTO {
     private String title;
     private String publicationYear;
-    private String contents;
+    private String content;
     private LocalDateTime createdDate;
-    private long authorId;
-    private Author author;
-    private long categoryId;
-    private Category category;
+    private AuthorDTO author;
+    private CategoryDTO category;
 }

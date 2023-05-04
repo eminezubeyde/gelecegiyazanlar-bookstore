@@ -2,6 +2,8 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.business.AuthorService;
 import com.example.bookstore.core.dto.requests.CreateAuthorRequest;
+import com.example.bookstore.core.exception.AlreadyExistsException;
+import com.example.bookstore.core.exception.EntityNotFoundException;
 import com.example.bookstore.core.result.GeneralResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,7 @@ public class AuthorController {
     private AuthorService authorService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody CreateAuthorRequest request) {
+    public GeneralResult create(@RequestBody CreateAuthorRequest request) throws AlreadyExistsException {
         return authorService.add(request);
     }
 
@@ -26,7 +28,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public GeneralResult getById(@RequestParam long id) {
+    public GeneralResult getById(@RequestParam long id) throws EntityNotFoundException {
         return authorService.getById(id);
     }
 
