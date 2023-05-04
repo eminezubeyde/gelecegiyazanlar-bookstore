@@ -12,21 +12,26 @@ import com.example.bookstore.core.result.GeneralResult;
 import com.example.bookstore.entity.Author;
 import com.example.bookstore.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
+    private final AuthorMapper authorMapper;
     @Override
     public GeneralResult add(CreateAuthorRequest request) {
+        log.info("author add method started with request : "+request);
         checkIfAuthorExistsByName(request.getName());
-        Author author = AuthorMapper.MAPPER.createAuthorRequestToAuthor(request);
+        Author author = authorMapper.createAuthorRequestToAuthor(request);
         authorRepository.save(author);
-        AuthorDTO dto = AuthorMapper.MAPPER.authorToAuthorDTO(author);
+        AuthorDTO dto = authorMapper.authorToAuthorDTO(author);
+        log.info("author add method finished.");
         return new DataResult<>(dto, AuthorMessages.SUCCESSFUL.toString());
 
     }
@@ -35,31 +40,35 @@ public class AuthorServiceImpl implements AuthorService {
     public GeneralResult getAll() {
         List<Author> authors = authorRepository.findAll();
         List<AuthorDTO> responses = authors.stream().map(AuthorMapper.MAPPER::authorToAuthorDTO).toList();
+        log.info("yazar listesi başarıyla getirildi");
 
-
-        return new DataResult<>(responses,AuthorMessages.SUCCESSFUL.toString());
+        return new DataResult<>(responses);
     }
 
     @Override
     public GeneralResult getById(long id) {
         checkIfAuthorExists(id);
         Author author = authorRepository.findById(id).orElseThrow();
+        log.info("id ye göre yazar getirildi");
         return new DataResult<>(author);
     }
 
     @Override
     public void delete(long id) {
         authorRepository.deleteById(id);
+        log.info("silme işlemi başarılı");
     }
 
     private void checkIfAuthorExistsByName(String name) throws AlreadyExistsException {
         if (authorRepository.existsByNameIgnoreCase(name)) {
+            log.error(AuthorMessages.ALREADY_EXISTS.toString());
             throw new AlreadyExistsException(AuthorMessages.ALREADY_EXISTS.toString());
         }
     }
 
     private void checkIfAuthorExists(long id) {
         if (!authorRepository.existsById(id)) {
+            log.error(AuthorMessages.NOT_FOUND.toString());
             throw new EntityNotFoundException(AuthorMessages.NOT_FOUND.toString());
         }
     }
