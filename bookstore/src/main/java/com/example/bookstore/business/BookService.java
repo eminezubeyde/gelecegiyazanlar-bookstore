@@ -11,6 +11,7 @@ public interface BookService {
     GeneralResult add(CreateBookRequest request) throws EntityNotFoundException;
 
     GeneralResult getAll();
+    GeneralResult getAllBooksByAuthorId(long id) throws EntityNotFoundException;
 
     GeneralResult getById(long id) throws EntityNotFoundException;
 

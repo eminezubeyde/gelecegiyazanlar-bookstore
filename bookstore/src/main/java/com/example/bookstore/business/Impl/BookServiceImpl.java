@@ -1,8 +1,6 @@
 package com.example.bookstore.business.Impl;
 
-import com.example.bookstore.business.AuthorService;
 import com.example.bookstore.business.BookService;
-import com.example.bookstore.business.CategoryService;
 import com.example.bookstore.core.dto.requests.CreateBookRequest;
 import com.example.bookstore.core.dto.responses.BookDTO;
 import com.example.bookstore.core.exception.EntityNotFoundException;
@@ -33,15 +31,12 @@ public class BookServiceImpl implements BookService {
     private final BookRepository repository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+    // @POSTCONSTRUCT
 
     @Override
     public GeneralResult add(CreateBookRequest request) throws EntityNotFoundException {
         log.info("book added method started with request : "+request);
-        Optional<Author> optionalAuthor=authorRepository.findById(request.getAuthorId());
-        if(optionalAuthor.isEmpty()){
-            log.error(AuthorMessages.NOT_FOUND.toString());
-            throw new EntityNotFoundException(AuthorMessages.NOT_FOUND.toString());
-        }
+        Optional<Author> optionalAuthor = checkIfAuthorExists(request.getAuthorId());
         Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
         if(optionalCategory.isEmpty()){
             log.error(CategoryMessages.NOT_FOUND.toString());
@@ -59,11 +54,21 @@ public class BookServiceImpl implements BookService {
         return new DataResult<>(dto, BookMessages.SUCCESSFUL.toString());
     }
 
+
     @Override
     public GeneralResult getAll() {
         List<Book> books = repository.findAll();
         List<BookDTO> dtoList = books.stream().map(BookMapper.INSTANCE::bookToBookDTO).toList();
         return new DataResult<>(dtoList);
+    }
+
+    @Override
+    public GeneralResult getAllBooksByAuthorId(long id) throws EntityNotFoundException {
+        Optional<Author> optionalAuthor = checkIfAuthorExists(id);
+        Author author=optionalAuthor.get();
+        List<Book>bookList=author.getBooks();
+        List<BookDTO> bookDTOList=bookList.stream().map(BookMapper.INSTANCE::bookToBookDTO).toList();
+        return new DataResult<>(bookDTOList,BookMessages.SUCCESSFUL.toString());
     }
 
     @Override
@@ -84,5 +89,13 @@ public class BookServiceImpl implements BookService {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException(BookMessages.NOT_FOUND.toString());
         }
+    }
+    private Optional<Author> checkIfAuthorExists(long id) throws EntityNotFoundException {
+        Optional<Author> optionalAuthor=authorRepository.findById(id);
+        if(optionalAuthor.isEmpty()){
+            log.error(AuthorMessages.NOT_FOUND.toString());
+            throw new EntityNotFoundException(AuthorMessages.NOT_FOUND.toString());
+        }
+        return optionalAuthor;
     }
 }

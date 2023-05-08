@@ -27,6 +27,11 @@ public class BookController {
     public GeneralResult getById(@RequestParam long id) throws EntityNotFoundException {
         return bookService.getById(id);
     }
+    @GetMapping("/getAllBooksByAuthorId")
+    public GeneralResult getAllBooksByAuthorId(@RequestParam long id) throws EntityNotFoundException {
+        return bookService.getAllBooksByAuthorId(id);
+    }
+
 
     @DeleteMapping
     public void delete(@RequestParam long id) throws EntityNotFoundException {

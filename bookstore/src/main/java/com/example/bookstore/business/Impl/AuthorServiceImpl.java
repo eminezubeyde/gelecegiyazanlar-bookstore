@@ -53,6 +53,7 @@ public class AuthorServiceImpl implements AuthorService {
         return new DataResult<>(author);
     }
 
+
     @Override
     public void delete(long id) {
         authorRepository.deleteById(id);

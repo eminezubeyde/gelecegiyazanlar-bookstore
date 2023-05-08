@@ -44,13 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public GeneralResult getAll() {
         List<Category> categories = repository.findAll();
-        List<CategoryDTO> dtoList = categories.stream().map(category -> {
-            CategoryDTO categoryDTO = new CategoryDTO();
-            categoryDTO.setId(category.getId());
-            categoryDTO.setName(category.getName());
-            categoryDTO.setParent(category.getParent());
-            return categoryDTO;
-        }).toList();
+        List<CategoryDTO> dtoList = categories.stream().map(CategoryMapper.INSTANCE::categoryToCategoryDTO).toList();
         return new DataResult<>(dtoList);
     }
 
@@ -62,17 +56,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = repository.getCategoryByName(name);
         CategoryDTO dto = CategoryMapper.INSTANCE.categoryToCategoryDTO(category);
         return new DataResult<>(dto);
-
-       /* Optional<Category> category = repository.findCategoryByName(name);
-        if (category.isPresent()) {
-            CategoryDTO dto = new CategoryDTO();
-            dto.setId(category.get().getId());
-            dto.setName(category.get().getName());
-            dto.setParent(category.get().getParent());
-
-            return new DataResult<>(dto);
-        }
-        return new ErrorResult(CategoryMessages.NOT_SUCCESSFUL.toString());*/
     }
 
     @Override
