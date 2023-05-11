@@ -31,7 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
         Author author = authorMapper.createAuthorRequestToAuthor(request);
         authorRepository.save(author);
         AuthorDTO dto = authorMapper.authorToAuthorDTO(author);
-        log.info("author add method finished.");
+        log.info("author add method finished : " +dto);
         return new DataResult<>(dto, AuthorMessages.SUCCESSFUL.toString());
 
     }
@@ -40,8 +40,7 @@ public class AuthorServiceImpl implements AuthorService {
     public GeneralResult getAll() {
         List<Author> authors = authorRepository.findAll();
         List<AuthorDTO> responses = authors.stream().map(AuthorMapper.MAPPER::authorToAuthorDTO).toList();
-        log.info("yazar listesi başarıyla getirildi");
-
+        log.info("author list successfully retrieved");
         return new DataResult<>(responses);
     }
 
@@ -57,7 +56,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(long id) {
         authorRepository.deleteById(id);
-        log.info("silme işlemi başarılı");
+        log.info("delete method succesfull");
     }
 
     private void checkIfAuthorExistsByName(String name) throws AlreadyExistsException {

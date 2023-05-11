@@ -13,6 +13,7 @@ import com.example.bookstore.core.result.GeneralResult;
 import com.example.bookstore.entity.Category;
 import com.example.bookstore.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,15 +21,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository repository;
 
     @Override
     public GeneralResult add(CreateCategoryRequest request) throws AlreadyExistsException {
         // 1. parent 'i olmayan bir category eklemek .
-        // ELEKTRONIK
+        // ROMAN
         //2. parent'ı olan bir category eklemek .
-        // TELEFON -> ELEKTRONIK
+        // POLİSİYE-> ROMAN
+        log.info("category added method started with request : "+request);
         checkIfCategoryExistsByName(request.getName());
         Category category = new Category();
         category.setName(request.getName());
@@ -38,19 +41,22 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         repository.save(category);
-        return new DataResult<>(category,CategoryMessages.SUCCESSFUL.toString());
+        CategoryDTO dto=CategoryMapper.INSTANCE.categoryToCategoryDTO(category);
+        log.info("book added method finish with response : "+dto);
+        return new DataResult<>(dto, CategoryMessages.SUCCESSFUL.toString());
     }
 
     @Override
     public GeneralResult getAll() {
         List<Category> categories = repository.findAll();
         List<CategoryDTO> dtoList = categories.stream().map(CategoryMapper.INSTANCE::categoryToCategoryDTO).toList();
+        log.info("category list successfully retrieved");
         return new DataResult<>(dtoList);
     }
 
     @Override
     public GeneralResult getCategoryByName(String name) {
-        if(repository.getCategoryByName(name)==null){
+        if (repository.getCategoryByName(name) == null) {
             return new ErrorResult(CategoryMessages.NOT_FOUND.toString());
         }
         Category category = repository.getCategoryByName(name);
@@ -62,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(long id) throws EntityNotFoundException {
         checkIfCategoryExists(id);
         repository.deleteById(id);
-
+        log.info("delete method succesfull");
     }
 
     private void checkIfCategoryExists(Long id) throws EntityNotFoundException {

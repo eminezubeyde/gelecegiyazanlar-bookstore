@@ -59,14 +59,14 @@ public class BookServiceImpl implements BookService {
     public GeneralResult getAll() {
         List<Book> books = repository.findAll();
         List<BookDTO> dtoList = books.stream().map(BookMapper.INSTANCE::bookToBookDTO).toList();
+        log.info("book list successfully retrieved");
         return new DataResult<>(dtoList);
     }
 
     @Override
     public GeneralResult getAllBooksByAuthorId(long id) throws EntityNotFoundException {
         Optional<Author> optionalAuthor = checkIfAuthorExists(id);
-        Author author=optionalAuthor.get();
-        List<Book>bookList=author.getBooks();
+        List<Book>bookList=optionalAuthor.get().getBooks();
         List<BookDTO> bookDTOList=bookList.stream().map(BookMapper.INSTANCE::bookToBookDTO).toList();
         return new DataResult<>(bookDTOList,BookMessages.SUCCESSFUL.toString());
     }
@@ -83,6 +83,7 @@ public class BookServiceImpl implements BookService {
     public void delete(long id) throws EntityNotFoundException {
         checkIfBookExists(id);
         repository.deleteById(id);
+        log.info("delete method succesfull");
     }
 
     private void checkIfBookExists(long id) throws EntityNotFoundException {
