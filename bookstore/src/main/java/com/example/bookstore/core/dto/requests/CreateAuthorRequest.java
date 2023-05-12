@@ -1,15 +1,12 @@
 package com.example.bookstore.core.dto.requests;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-
-import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,17 +14,24 @@ import java.time.LocalDateTime;
 @Setter
 
 public class CreateAuthorRequest {
-    @NotBlank(message = "boş olamaz.")
+    @NotBlank
     @Min(value = 2, message = "length must be greater than 2")
     private String name;
 
     @NotBlank
     @Length(min = 2, message = "length must be greater than 2")
     private String lastName;
+
     @NotBlank
     @Length(min = 2, message = "length must be greater than 2")
     private String userName;
+
+    @NotBlank
+    @Size(min = 8, message = "must be at least 8 characters")
     private String password;
     private String telephone;
+
+    @NotNull(message = "date of birth cannot be empty")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private String birthDay;
 }

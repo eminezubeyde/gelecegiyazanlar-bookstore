@@ -27,14 +27,13 @@ public class BookController {
     public GeneralResult getById(@RequestParam long id) throws EntityNotFoundException {
         return bookService.getById(id);
     }
+
     @GetMapping("/category")
     public GeneralResult getAllBooksByCategoryId(@RequestParam long id) throws EntityNotFoundException {
         return bookService.getAllBooksByCategoryId(id);
     }
 
     //TODO validasyon ekle
-    //TODO postman istekleri düzenleri
-
 
     @DeleteMapping
     public void delete(@RequestParam long id) throws EntityNotFoundException {

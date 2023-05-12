@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
         // ROMAN
         //2. parent'ı olan bir category eklemek .
         // POLİSİYE-> ROMAN
-        log.info("category added method started with request : "+request);
+        log.info("category added method started with request : " + request);
         checkIfCategoryExistsByName(request.getName());
         Category category = new Category();
         category.setName(request.getName());
@@ -41,8 +41,8 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         repository.save(category);
-        CategoryDTO dto=CategoryMapper.INSTANCE.categoryToCategoryDTO(category);
-        log.info("book added method finish with response : "+dto);
+        CategoryDTO dto = CategoryMapper.INSTANCE.categoryToCategoryDTO(category);
+        log.info("book added method finish with response : " + dto);
         return new DataResult<>(dto, CategoryMessages.SUCCESSFUL.toString());
     }
 

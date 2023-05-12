@@ -89,8 +89,6 @@ public class BookServiceImpl implements BookService {
         }
 
 
-
-
         List<Book> books = findAllBooksByParentCategory(optionalCategory.get());
 
         List<BookDTO> dtoList = books
@@ -104,33 +102,33 @@ public class BookServiceImpl implements BookService {
     private List<Book> findAllBooksByParentCategory(Category parentCategory) {
 
         return repository.findAll().stream().map(book -> {
-            if(checkBookHasParentCategory(book.getCategory(),parentCategory.getId())){ // üst kategorilerinde gönderilen categoriye sahip mi
-             return book;
+            if (checkBookHasParentCategory(book.getCategory()
+                    , parentCategory.getId())) { // üst kategorilerinde gönderilen categoriye sahip mi
+                return book;
             }
             return null;
         }).collect(Collectors.toList());
-
 
 
     }
 
     private Boolean checkBookHasParentCategory(Category category, Long parentCategoryId) { // recursive method.
 
-        if(category.getId()==parentCategoryId){
+        if (category.getId() == parentCategoryId) {
             return true;
         }
 
-        Category subParentCategory  = category.getParent();
+        Category subParentCategory = category.getParent();
 
-        if(subParentCategory==null){
+        if (subParentCategory == null) {
             return false;
         }
 
-        if(subParentCategory.getId()==parentCategoryId){
+        if (subParentCategory.getId() == parentCategoryId) {
             return true;
         }
 
-        return checkBookHasParentCategory(subParentCategory,parentCategoryId);
+        return checkBookHasParentCategory(subParentCategory, parentCategoryId);
 
 
     }
