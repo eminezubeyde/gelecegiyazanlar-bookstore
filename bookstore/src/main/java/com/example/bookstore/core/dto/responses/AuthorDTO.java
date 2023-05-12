@@ -16,4 +16,5 @@ public class AuthorDTO {
     private String userName;
     private String password;
     private String telephone;
+    private String birthDay;
 }
