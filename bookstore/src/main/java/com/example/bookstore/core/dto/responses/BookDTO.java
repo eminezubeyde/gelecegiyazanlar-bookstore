@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BookDTO {
     private String title;
-    private String publicationYear;
+    private LocalDateTime publicationYear;
     private String content;
     private LocalDateTime createdDate;
     private AuthorDTO author;

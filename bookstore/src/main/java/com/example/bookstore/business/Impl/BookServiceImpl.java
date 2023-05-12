@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +36,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public GeneralResult add(CreateBookRequest request) throws EntityNotFoundException {
-        log.info("book added method started with request : "+request);
-        Optional<Author> optionalAuthor = checkIfAuthorExists(request.getAuthorId());
+        log.info("book added method started with request : " + request);
+        Optional<Author> optionalAuthor = findAuthorByIdOrElseThrow(request.getAuthorId());
         Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
-        if(optionalCategory.isEmpty()){
+        if (optionalCategory.isEmpty()) {
             log.error(CategoryMessages.NOT_FOUND.toString());
             throw new EntityNotFoundException(CategoryMessages.NOT_FOUND.toString());
         }
@@ -48,9 +49,11 @@ public class BookServiceImpl implements BookService {
         book.setCategory(optionalCategory.get());
         book.setCreatedDate(LocalDateTime.now());
         repository.save(book);
+        optionalCategory.get().addBook(book);
+        optionalAuthor.get().addBook(book);
         BookDTO dto = BookMapper.INSTANCE.bookToBookDTO(book);
 
-        log.info("book added method finish with response : "+dto);
+        log.info("book added method finish with response : " + dto);
         return new DataResult<>(dto, BookMessages.SUCCESSFUL.toString());
     }
 
@@ -64,18 +67,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public GeneralResult getAllBooksByAuthorId(long id) throws EntityNotFoundException {
-        Optional<Author> optionalAuthor = checkIfAuthorExists(id);
-        List<Book>bookList=optionalAuthor.get().getBooks();
-        List<BookDTO> bookDTOList=bookList.stream().map(BookMapper.INSTANCE::bookToBookDTO).toList();
-        return new DataResult<>(bookDTOList,BookMessages.SUCCESSFUL.toString());
-    }
-
-    @Override
     public GeneralResult getById(long id) throws EntityNotFoundException {
         checkIfBookExists(id);
         Book book = repository.findById(id).orElseThrow();
-        BookDTO dto=BookMapper.INSTANCE.bookToBookDTO(book);
+        BookDTO dto = BookMapper.INSTANCE.bookToBookDTO(book);
         return new DataResult<>(dto);
     }
 
@@ -86,14 +81,69 @@ public class BookServiceImpl implements BookService {
         log.info("delete method succesfull");
     }
 
+    @Override
+    public GeneralResult getAllBooksByCategoryId(long id) throws EntityNotFoundException {
+        Optional<Category> optionalCategory = categoryRepository.findById(id);
+        if (optionalCategory.isEmpty()) {
+            throw new EntityNotFoundException(CategoryMessages.NOT_FOUND.toString());
+        }
+
+
+
+
+        List<Book> books = findAllBooksByParentCategory(optionalCategory.get());
+
+        List<BookDTO> dtoList = books
+                .stream()
+                .map(BookMapper.INSTANCE::bookToBookDTO).toList();
+
+        return new DataResult<>(dtoList);
+
+    }
+
+    private List<Book> findAllBooksByParentCategory(Category parentCategory) {
+
+        return repository.findAll().stream().map(book -> {
+            if(checkBookHasParentCategory(book.getCategory(),parentCategory.getId())){ // üst kategorilerinde gönderilen categoriye sahip mi
+             return book;
+            }
+            return null;
+        }).collect(Collectors.toList());
+
+
+
+    }
+
+    private Boolean checkBookHasParentCategory(Category category, Long parentCategoryId) { // recursive method.
+
+        if(category.getId()==parentCategoryId){
+            return true;
+        }
+
+        Category subParentCategory  = category.getParent();
+
+        if(subParentCategory==null){
+            return false;
+        }
+
+        if(subParentCategory.getId()==parentCategoryId){
+            return true;
+        }
+
+        return checkBookHasParentCategory(subParentCategory,parentCategoryId);
+
+
+    }
+
     private void checkIfBookExists(long id) throws EntityNotFoundException {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException(BookMessages.NOT_FOUND.toString());
         }
     }
-    private Optional<Author> checkIfAuthorExists(long id) throws EntityNotFoundException {
-        Optional<Author> optionalAuthor=authorRepository.findById(id);
-        if(optionalAuthor.isEmpty()){
+
+    private Optional<Author> findAuthorByIdOrElseThrow(long id) throws EntityNotFoundException {
+        Optional<Author> optionalAuthor = authorRepository.findById(id);
+        if (optionalAuthor.isEmpty()) {
             log.error(AuthorMessages.NOT_FOUND.toString());
             throw new EntityNotFoundException(AuthorMessages.NOT_FOUND.toString());
         }

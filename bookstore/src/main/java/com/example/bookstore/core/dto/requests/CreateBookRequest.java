@@ -2,10 +2,12 @@ package com.example.bookstore.core.dto.requests;
 
 import com.example.bookstore.entity.Author;
 import com.example.bookstore.entity.Category;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -14,8 +16,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateBookRequest {
+    @NotBlank
+    @Length(min = 2, message = "length must be greater than 2")
     private String title;
-    private String publicationYear;
+    private LocalDateTime publicationYear;
     private String content;
     private LocalDateTime createdDate;
     private long authorId;

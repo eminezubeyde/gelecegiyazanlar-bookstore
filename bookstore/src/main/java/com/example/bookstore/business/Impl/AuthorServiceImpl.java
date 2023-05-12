@@ -3,19 +3,24 @@ package com.example.bookstore.business.Impl;
 import com.example.bookstore.business.AuthorService;
 import com.example.bookstore.core.dto.requests.CreateAuthorRequest;
 import com.example.bookstore.core.dto.responses.AuthorDTO;
+import com.example.bookstore.core.dto.responses.BookDTO;
 import com.example.bookstore.core.exception.AlreadyExistsException;
 import com.example.bookstore.core.exception.EntityNotFoundException;
 import com.example.bookstore.core.mapper.AuthorMapper;
+import com.example.bookstore.core.mapper.BookMapper;
 import com.example.bookstore.core.message.AuthorMessages;
+import com.example.bookstore.core.message.BookMessages;
 import com.example.bookstore.core.result.DataResult;
 import com.example.bookstore.core.result.GeneralResult;
 import com.example.bookstore.entity.Author;
+import com.example.bookstore.entity.Book;
 import com.example.bookstore.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +57,14 @@ public class AuthorServiceImpl implements AuthorService {
         return new DataResult<>(author);
     }
 
+    @Override
+    public GeneralResult getAllBooksByAuthorId(long id) throws EntityNotFoundException {
+        Optional<Author> optionalAuthor = findAuthorByIdOrElseThrow(id);
+        List<Book> bookList = optionalAuthor.get().getBooks();
+        List<BookDTO> bookDTOList = bookList.stream().map(BookMapper.INSTANCE::bookToBookDTO).toList();
+        return new DataResult<>(bookDTOList, BookMessages.SUCCESSFUL.toString());
+    }
+
 
     @Override
     public void delete(long id) {
@@ -71,5 +84,13 @@ public class AuthorServiceImpl implements AuthorService {
             log.error(AuthorMessages.NOT_FOUND.toString());
             throw new EntityNotFoundException(AuthorMessages.NOT_FOUND.toString());
         }
+    }
+    private Optional<Author> findAuthorByIdOrElseThrow(long id) throws EntityNotFoundException {
+        Optional<Author> optionalAuthor = authorRepository.findById(id);
+        if (optionalAuthor.isEmpty()) {
+            log.error(AuthorMessages.NOT_FOUND.toString());
+            throw new EntityNotFoundException(AuthorMessages.NOT_FOUND.toString());
+        }
+        return optionalAuthor;
     }
 }

@@ -15,6 +15,9 @@ public interface AuthorService {
     GeneralResult getAll();
 
     GeneralResult getById(long id) throws EntityNotFoundException;
+    GeneralResult getAllBooksByAuthorId(long id) throws EntityNotFoundException;
 
     void delete(long id);
+
+
 }

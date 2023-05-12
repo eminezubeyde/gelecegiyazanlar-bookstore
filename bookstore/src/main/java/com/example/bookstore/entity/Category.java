@@ -1,12 +1,13 @@
 package com.example.bookstore.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,6 +20,16 @@ public class Category extends BaseModel {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Category parent;
+
+    @OneToMany(mappedBy = "category")
+    private List<Book> books;
+
+    public void addBook(Book book){
+        if(books==null){
+           books= new ArrayList<>();
+        }
+        books.add(book);
+    }
 
 
 }

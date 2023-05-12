@@ -5,8 +5,8 @@ import com.example.bookstore.core.dto.requests.CreateAuthorRequest;
 import com.example.bookstore.core.exception.AlreadyExistsException;
 import com.example.bookstore.core.exception.EntityNotFoundException;
 import com.example.bookstore.core.result.GeneralResult;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -14,22 +14,26 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("api/author")
 public class AuthorController {
-    @Autowired
-    private AuthorService authorService;
+
+    private final AuthorService authorService;
 
     @PostMapping
     public GeneralResult create(@RequestBody CreateAuthorRequest request) throws AlreadyExistsException {
         return authorService.add(request);
     }
 
-    @GetMapping
+    @GetMapping("/getall")
     public GeneralResult getAll() {
         return authorService.getAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping
     public GeneralResult getById(@RequestParam long id) throws EntityNotFoundException {
         return authorService.getById(id);
+    }
+    @GetMapping("/{authorId}") // author/
+    public GeneralResult getAllBooksByAuthorId(@PathVariable(name = "authorId") long id) throws EntityNotFoundException {
+        return authorService.getAllBooksByAuthorId(id);
     }
 
     @DeleteMapping

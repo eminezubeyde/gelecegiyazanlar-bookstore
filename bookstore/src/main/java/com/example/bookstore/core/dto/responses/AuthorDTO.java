@@ -13,4 +13,7 @@ public class AuthorDTO {
     private long id;
     private String name;
     private String lastName;
+    private String userName;
+    private String password;
+    private String telephone;
 }
