@@ -4,6 +4,7 @@ import com.example.bookstore.business.BookService;
 import com.example.bookstore.core.dto.requests.CreateBookRequest;
 import com.example.bookstore.core.exception.EntityNotFoundException;
 import com.example.bookstore.core.result.GeneralResult;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody CreateBookRequest request) throws EntityNotFoundException {
+    public GeneralResult create(@Valid @RequestBody CreateBookRequest request) throws EntityNotFoundException {
         return bookService.add(request);
     }
 

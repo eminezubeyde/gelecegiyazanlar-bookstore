@@ -1,11 +1,11 @@
 package com.example.bookstore.controller;
 
 import com.example.bookstore.business.CategoryService;
-import com.example.bookstore.core.dto.requests.CreateAuthorRequest;
 import com.example.bookstore.core.dto.requests.CreateCategoryRequest;
 import com.example.bookstore.core.exception.AlreadyExistsException;
 import com.example.bookstore.core.exception.EntityNotFoundException;
 import com.example.bookstore.core.result.GeneralResult;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     private final CategoryService categoryService;
     @PostMapping
-    public GeneralResult create(@RequestBody CreateCategoryRequest request) throws AlreadyExistsException {
+    public GeneralResult create(@Valid @RequestBody CreateCategoryRequest request) throws AlreadyExistsException {
         return categoryService.add(request);
     }
 

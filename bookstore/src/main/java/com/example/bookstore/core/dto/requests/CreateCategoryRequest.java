@@ -1,6 +1,5 @@
 package com.example.bookstore.core.dto.requests;
 
-import com.example.bookstore.entity.Category;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;

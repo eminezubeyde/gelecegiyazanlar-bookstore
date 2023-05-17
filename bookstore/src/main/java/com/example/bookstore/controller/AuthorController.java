@@ -18,7 +18,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public GeneralResult create(@RequestBody CreateAuthorRequest request) throws AlreadyExistsException {
+    public GeneralResult create( @Valid @RequestBody CreateAuthorRequest request) throws AlreadyExistsException {
         return authorService.add(request);
     }
 

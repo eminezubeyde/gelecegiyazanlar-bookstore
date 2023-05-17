@@ -19,5 +19,4 @@ public interface AuthorService {
 
     void delete(long id);
 
-
 }
